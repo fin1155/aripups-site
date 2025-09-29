@@ -198,21 +198,39 @@
   // Image loader with extension fallback (jpg -> jpeg -> png -> svg)
   
   // Image loader with extension fallback (jpg -> jpeg -> png -> svg)
-  function setImgWithFallback(img, base, order){
-    const m = String(base).match(/\.(svg|png|jpe?g|webp)$/i);
-    const baseNoExt = m ? base.replace(/\.(svg|png|jpe?g|webp)$/i,'') : base;
-    const preferred = order && order.length ? order.slice() : ['jpg','jpeg','png','svg'];
-    const startExt = m ? m[1].toLowerCase() : null;
-    const exts = startExt ? [startExt, ...preferred.filter(e => e !== startExt)] : preferred.slice();
-    let idx = 0;
-    function tryNext(){
-      if (idx >= exts.length) return;
-      const ext = exts[idx++];
-      img.src = baseNoExt + '.' + ext;
-    }
-    img.onerror = tryNext;
-    tryNext();
+  
+function setImgWithFallback(img, base, order){
+  // Normalize base: allow passing with or without extension
+  const match = String(base).match(/\.(svg|png|jpe?g|webp)$/i);
+  const baseNoExt = match ? base.replace(/\.(svg|png|jpe?g|webp)$/i,'') : base;
+
+  // Preferred order (lowercase)
+  const preferred = (order && order.length ? order.slice() : ['jpg','jpeg','png','webp','svg']).map(e=>String(e).toLowerCase());
+
+  // Build a case-robust list: lower + UPPER (for case-sensitive hosts)
+  const exts = [];
+  // If user passed explicit extension, start with it first
+  if (match) {
+    const startExt = match[1];
+    exts.push(startExt);
+    preferred.filter(e => e.toLowerCase() !== startExt.toLowerCase()).forEach(e=>exts.push(e));
+  } else {
+    preferred.forEach(e=>exts.push(e));
   }
+  // Add uppercase variants after lowercase to hit files like .JPG on Linux hosting
+  const upperExtras = exts.map(e=>e.toUpperCase()).filter(e=>!exts.includes(e));
+  exts.push(...upperExtras);
+
+  let idx = 0;
+  function tryNext(){
+    if (idx >= exts.length) { return; }
+    const ext = exts[idx++];
+    img.src = baseNoExt + '.' + ext;
+  }
+  img.onerror = tryNext;
+  tryNext();
+}
+}
 
 window.addEventListener('DOMContentLoaded', async ()=>{
   // normalize order buttons to Avito

@@ -90,3 +90,12 @@ figure{margin:0}
 @media (max-width: 560px){
   .grid, .grid-4, .grid-2{grid-template-columns:1fr}
 }
+
+
+/* --- Mobile nav fixes --- */
+@media (max-width: 760px){
+  .header{flex-wrap: wrap; align-items: flex-start; gap: 10px}
+  .brand{flex: 0 0 auto}
+  .nav{flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; padding-bottom: 6px; -webkit-overflow-scrolling: touch}
+  .nav a{flex: 0 0 auto}
+}
