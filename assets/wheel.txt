@@ -1,7 +1,7 @@
-ph1
-ph2
-ph3
-ph4
-ph5
-ph6
-ph7
+ph1.JPG
+ph2.JPG
+ph3.JPG
+ph4.JPG
+ph5.JPG
+ph6.JPG
+ph7.JPG

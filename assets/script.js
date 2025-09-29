@@ -198,39 +198,21 @@
   // Image loader with extension fallback (jpg -> jpeg -> png -> svg)
   
   // Image loader with extension fallback (jpg -> jpeg -> png -> svg)
-  
-function setImgWithFallback(img, base, order){
-  // Normalize base: allow passing with or without extension
-  const match = String(base).match(/\.(svg|png|jpe?g|webp)$/i);
-  const baseNoExt = match ? base.replace(/\.(svg|png|jpe?g|webp)$/i,'') : base;
-
-  // Preferred order (lowercase)
-  const preferred = (order && order.length ? order.slice() : ['jpg','jpeg','png','webp','svg']).map(e=>String(e).toLowerCase());
-
-  // Build a case-robust list: lower + UPPER (for case-sensitive hosts)
-  const exts = [];
-  // If user passed explicit extension, start with it first
-  if (match) {
-    const startExt = match[1];
-    exts.push(startExt);
-    preferred.filter(e => e.toLowerCase() !== startExt.toLowerCase()).forEach(e=>exts.push(e));
-  } else {
-    preferred.forEach(e=>exts.push(e));
+  function setImgWithFallback(img, base, order){
+    const m = String(base).match(/\.(svg|png|jpe?g|webp)$/i);
+    const baseNoExt = m ? base.replace(/\.(svg|png|jpe?g|webp)$/i,'') : base;
+    const preferred = order && order.length ? order.slice() : ['jpg','jpeg','png','svg'];
+    const startExt = m ? m[1].toLowerCase() : null;
+    const exts = startExt ? [startExt, ...preferred.filter(e => e !== startExt)] : preferred.slice();
+    let idx = 0;
+    function tryNext(){
+      if (idx >= exts.length) return;
+      const ext = exts[idx++];
+      img.src = baseNoExt + '.' + ext;
+    }
+    img.onerror = tryNext;
+    tryNext();
   }
-  // Add uppercase variants after lowercase to hit files like .JPG on Linux hosting
-  const upperExtras = exts.map(e=>e.toUpperCase()).filter(e=>!exts.includes(e));
-  exts.push(...upperExtras);
-
-  let idx = 0;
-  function tryNext(){
-    if (idx >= exts.length) { return; }
-    const ext = exts[idx++];
-    img.src = baseNoExt + '.' + ext;
-  }
-  img.onerror = tryNext;
-  tryNext();
-}
-}
 
 window.addEventListener('DOMContentLoaded', async ()=>{
   // normalize order buttons to Avito
@@ -269,3 +251,65 @@ document.addEventListener('DOMContentLoaded', ()=>{
     a.setAttribute('target','_blank'); a.setAttribute('rel','noopener');
   });
 });
+
+
+// === PATCH: robust image fallback (JPG/JPEG/PNG/SVG/WEBP, any case) ===
+function setImgWithFallback(img, base, order){
+  const m = String(base).match(/\.(svg|png|jpe?g|webp)$/i);
+  const baseNoExt = m ? base.replace(/\.(svg|png|jpe?g|webp)$/i,'') : base;
+  const pref = (order && order.length ? order.slice() : ['jpg','jpeg','png','svg','webp']);
+  const variants = [];
+  pref.forEach(e => { variants.push(e.toLowerCase(), e.toUpperCase()); });
+  let exts = variants.slice();
+  if (m){
+    const orig = m[1];
+    const low = orig.toLowerCase();
+    const up  = orig.toUpperCase();
+    const seen = new Set();
+    exts = [orig, (orig===low?up:low), ...variants].filter(e=>{
+      const k = e.toLowerCase() + '|' + (e===e.toUpperCase());
+      if (seen.has(k)) return false; seen.add(k); return true;
+    });
+  }
+  let idx = 0;
+  function tryNext(){
+    if (idx >= exts.length) return;
+    const ext = exts[idx++];
+    img.src = baseNoExt + '.' + ext;
+  }
+  img.onerror = tryNext;
+  tryNext();
+}
+
+// === PATCH: ensure Avito link is applied AFTER config loads ===
+document.addEventListener('DOMContentLoaded', ()=>{
+  const rebinder = setInterval(()=>{
+    try{
+      if (window.state && state.cfg && state.cfg.avito){
+        var url = state.cfg.avito;
+        var nodes = document.querySelectorAll('a.btn, a[data-avito="1"]');
+        nodes.forEach(a=>{
+          if (a.hasAttribute('data-avito') || /Заказать|Оформить/i.test(a.textContent)){
+            a.href = url;
+            a.setAttribute('target','_blank');
+            a.setAttribute('rel','noopener');
+          }
+        });
+        clearInterval(rebinder);
+      }
+    }catch(e){ /* ignore */ }
+  }, 120);
+  setTimeout(()=>clearInterval(rebinder), 4000);
+});
+
+// === PATCH: mobile nav toggle (burger) ===
+(function(){
+  const btn = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('#site-nav');
+  if (btn && nav){
+    btn.addEventListener('click', ()=>{
+      const open = nav.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+})();
