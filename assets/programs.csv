@@ -1,0 +1,12 @@
+slug,title,desc,price_from,image,active,featured
+focusy,Фокусы,Шоу фокусов для детей,10000,assets/gallery/catalog/card1.jpg,1,1
+sugar-cotton,Шоу сладкой ваты,Сладкая вата и интерактив,18000,assets/gallery/catalog/card2.jpg,1,1
+transformers,Шоу трансформеры,Эффектное шоу с героями,13000,assets/gallery/catalog/card3.jpg,1,1
+spa-party,Спа-вечеринка,Спа-наборы и фотосессия,,assets/gallery/catalog/card4.jpg,1,0
+pony-unicorn,Пони-единорог,Белоснежный добрый пони,15000,assets/gallery/catalog/card5.jpg,1,0
+not-games,Не игры,Весёлые ведущие и конкурсы,6000,assets/gallery/catalog/card6.jpg,1,0
+blog-party,Блогерская вечеринка,"Челленджи, танцы, караоке-баттлы",10900,assets/gallery/catalog/card7.jpg,1,0
+beauty-bar,Бьюти бар,"Причёски, блёстки и тату",6900,assets/gallery/catalog/card8.jpg,1,0
+bubble-show,Мыльное шоу,Гигантские пузыри и туман,4500,assets/gallery/catalog/card9.jpg,1,0
+chem-show,Химическое шоу,Безопасные эксперименты,6500,assets/gallery/catalog/card10.jpg,1,0
+paper-disco,Бумажная дискотека,Неоновая бумага и шоу,5500,assets/gallery/catalog/card11.jpg,1,0

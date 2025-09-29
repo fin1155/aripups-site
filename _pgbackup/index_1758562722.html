@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AriPups — детские праздники</title>
+  <meta name="description" content="Детские мероприятия, шоу и аниматоры в нежных тонах. Заказать праздник легко!">
+  <meta property="og:title" content="AriPups — детские праздники">
+  <meta property="og:description" content="Детские мероприятия, шоу и аниматоры в нежных тонах. Заказать праздник легко!">
+  <meta property="og:image" content="assets/img/logo.svg">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/site-config.json" as="fetch" crossorigin="anonymous">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script defer src="assets/script.js"></script>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <a href="index.html"><img id="site-logo" src="assets/img/logo.svg" alt="Логотип AriPups"></a>
+    <strong id="site-name">AriPups</strong>
+  </div>
+  <nav class="nav" aria-label="Главная навигация">
+    <a href="index.html">Главная</a>
+    <a href="catalog.html">Каталог</a>
+    <a href="animators.html">Аниматоры</a>
+    <a href="gallery.html">Галерея</a>
+    <a href="reviews.html">Отзывы</a>
+    <a href="about.html">О нас</a>
+    <a href="contacts.html">Контакты</a>
+  </nav>
+</header>
+<a id="fab-call" class="fab-call" href="#" aria-label="Позвонить">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.09 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.57 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45 13.32 13.32 0 0 0 2.61.57A2 2 0 0 1 22 16.92z"/></svg>
+  <span>Позвонить</span>
+</a>
+<main class="container">
+
+<section class="hero">
+  <div class="card">
+    <span class="hero-badge">Добро пожаловать в AriPups</span>
+    <h1>Нежные праздники для самых важных людей</h1>
+    <p class="muted">Организуем день рождения, выпускной и тематические шоу — легко на статичном сайте без бэкенда.</p>
+    <p><a class="btn" href="catalog.html">Смотреть каталог</a></p>
+    <div class="quick">
+      <img id="quick-img" src="assets/img/quick.svg" alt="Быстрый запрос" width="64" height="64" loading="lazy">
+      <div>
+        <strong>Быстрый запрос</strong>
+        <div class="muted">Напишите нам — всё настроится из <code>assets/site-config.json</code></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Аниматоры — колесо</h2>
+    <p class="muted">Автопрокрутка и drag. Пауза при отсутствии в зоне видимости.</p>
+    <div class="wheel-wrap" id="wheel-section">
+      <div class="wheel" data-wheel>
+        <div class="wheel-track" id="wheel-track"></div>
+        <div class="wheel-center">Аниматоры</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Популярные программы</h2>
+  <div id="featured-programs" class="grid"></div>
+</section>
+
+</main>
+<footer class="footer">
+  © <span id="site-year"></span> <span id="site-name-foot">AriPups</span>. Все права защищены.
+</footer>
+</body>
+</html>

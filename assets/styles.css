@@ -1,0 +1,92 @@
+
+:root{
+  --bg1:#ffe6f3;
+  --bg2:#e9dcff;
+  --ink:#5a3f6b;
+  --ink-soft:#7d5e92;
+  --card:#ffffff;
+  --grad: linear-gradient(135deg, #ffd8ef 0%, #e6ddff 100%);
+  --grad-strong: linear-gradient(135deg, #f7c6e7 0%, #c9b6ff 100%);
+  --shadow: 0 10px 30px rgba(138, 84, 166, .18);
+  --radius: 18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, "SF Pro", Arial, sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 10% 0%, var(--bg1), transparent 40%), 
+              radial-gradient(circle at 90% 10%, var(--bg2), transparent 40%), #fff;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.header{
+  display:flex;align-items:center;gap:20px;justify-content:space-between;
+  padding:12px 24px; position:sticky; top:0; z-index:30; backdrop-filter:saturate(1.2) blur(6px);
+  background:rgba(255,255,255,.6); border-bottom:1px solid rgba(124,94,166,.12);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{height:40px}
+.nav{display:flex;gap:14px;flex-wrap:wrap}
+.nav a{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.7);transition:.3s}
+.nav a:hover{background:var(--grad-strong); color:white; box-shadow: var(--shadow)}
+.hero{
+  display:grid;grid-template-columns: 1.2fr 1fr; gap:24px; align-items:center; padding:40px 24px;
+}
+.card{
+  background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+  padding:24px;
+}
+.btn{
+  display:inline-block; padding:12px 18px; border-radius:14px; background:var(--grad);
+  transition:.25s; font-weight:600;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr); gap:18px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr); gap:18px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr); gap:18px}
+.program-card img{width:100%;height:180px;object-fit:cover;border-radius:14px}
+.program-card h3{margin:12px 0 6px 0}
+.price{font-weight:700}
+.footer{padding:30px 24px; text-align:center; color:var(--ink-soft)}
+h1{font-size:clamp(28px,3vw,40px); margin:8px 0 4px}
+h2{font-size:clamp(22px,2.2vw,28px); margin:0 0 10px}
+.muted{color:var(--ink-soft)}
+.quick{display:flex;align-items:center; gap:16px}
+
+.hero-badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.8); margin-bottom:10px}
+
+.wheel-wrap{position:relative; height:380px}
+.wheel{position:absolute; inset:0; display:grid; place-items:center; touch-action:pan-y; user-select:none}
+.wheel-track{position:relative; width:280px; height:280px; border-radius:999px; }
+.wheel-item{position:absolute; width:110px; height:110px; border-radius:16px; overflow:hidden; box-shadow:var(--shadow)}
+.wheel-item img{width:100%; height:100%; object-fit:cover}
+.wheel-center{position:absolute; width:140px; height:140px; border-radius:50%; background:var(--grad-strong); box-shadow:var(--shadow);
+  display:grid; place-items:center; color:#fff; font-weight:700}
+
+.review{background:var(--card); padding:16px; border-radius:16px; box-shadow:var(--shadow)}
+
+.fab-call{
+  position:fixed; right:18px; bottom:18px; z-index:50;
+  display:none; align-items:center; gap:8px; padding:12px 16px; border-radius:999px; background:var(--grad-strong);
+  color:#fff; box-shadow:var(--shadow);
+}
+.fab-call.show{display:flex}
+.fab-call svg{width:18px;height:18px}
+
+img[loading=lazy]{filter:saturate(1.05) contrast(1.02)}
+figure{margin:0}
+.gallery{columns: 3 260px; column-gap: 16px}
+.gallery figure{break-inside: avoid; margin:0 0 16px 0; background:var(--card); border-radius:16px; overflow:hidden; box-shadow:var(--shadow)}
+.gallery img{width:100%; height:auto; display:block}
+.gallery figcaption{padding:10px 12px}
+
+@media (max-width: 900px){
+  .hero{grid-template-columns: 1fr}
+  .grid{grid-template-columns:1fr 1fr}
+  .grid-4{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 560px){
+  .grid, .grid-4, .grid-2{grid-template-columns:1fr}
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Контакты — AriPups</title>
+  <meta name="description" content="Свяжитесь с нами: телефон, email, форма заказа без бэкенда.">
+  <meta property="og:title" content="Контакты — AriPups">
+  <meta property="og:description" content="Свяжитесь с нами: телефон, email, форма заказа без бэкенда.">
+  <meta property="og:image" content="assets/img/logo.svg">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/site-config.json" as="fetch" crossorigin="anonymous">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script defer src="assets/script.js"></script>
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <a href="index.html"><img id="site-logo" src="assets/img/logo.svg" alt="Логотип AriPups"></a>
+    <strong id="site-name">AriPups</strong>
+  </div>
+  <nav class="nav" aria-label="Главная навигация">
+    <a href="index.html">Главная</a>
+    <a href="catalog.html">Каталог</a>
+    <a href="animators.html">Аниматоры</a>
+    <a href="gallery.html">Галерея</a>
+    <a href="reviews.html">Отзывы</a>
+    <a href="about.html">О нас</a>
+    <a href="contacts.html">Контакты</a>
+  </nav>
+</header>
+<a id="fab-call" class="fab-call" href="#" aria-label="Позвонить">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.09 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.57 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45 13.32 13.32 0 0 0 2.61.57A2 2 0 0 1 22 16.92z"/></svg>
+  <span>Позвонить</span>
+</a>
+<main class="container">
+
+<h1>Контакты</h1>
+<div class="grid-2">
+  <div class="card">
+    <h2>Связаться</h2>
+    <p><strong>Телефон:</strong> <a id="cfg-phone" href="#">...</a><br>
+       <strong>Email:</strong> <a id="cfg-email" href="#">...</a><br>
+       <strong>Адрес:</strong> <span id="cfg-address">...</span></p>
+    <p class="muted">Параметры из ссылки проставляются в форму: <code>?format=...&price=...&subject=...</code></p>
+  </div>
+  <form id="order-form" class="card">
+    <h2>Быстрый заказ</h2>
+    <label>Формат программы<br>
+      <input type="text" name="format" placeholder="Принцесса" required>
+    </label><br><br>
+    <label>Имя<br>
+      <input type="text" name="name" placeholder="Ваше имя" required>
+    </label><br><br>
+    <label>Телефон<br>
+      <input type="tel" name="phone" placeholder="+46 ..." required>
+    </label><br><br>
+    <label>Комментарий<br>
+      <textarea name="comment" placeholder="Дата, адрес, возраст, пожелания"></textarea>
+    </label><br><br>
+    <button class="btn" type="submit">Отправить</button>
+    <p class="muted" id="mailto-hint">Отправка через mailto — без бэкенда и платежей.</p>
+  </form>
+</div>
+
+</main>
+<footer class="footer">
+  © <span id="site-year"></span> <span id="site-name-foot">AriPups</span>. Все права защищены.
+</footer>
+</body>
+</html>
