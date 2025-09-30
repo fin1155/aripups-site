@@ -201,9 +201,9 @@
   function setImgWithFallback(img, base, order){
     const m = String(base).match(/\.(svg|png|jpe?g|webp)$/i);
     const baseNoExt = m ? base.replace(/\.(svg|png|jpe?g|webp)$/i,'') : base;
-    const preferred = order && order.length ? order.slice() : ['jpg','jpeg','png','svg'];
+    const preferred = (order && order.length ? order.slice() : ['jpg','jpeg','png','webp','JPG','JPEG','PNG','WEBP']);
     const startExt = m ? m[1].toLowerCase() : null;
-    const exts = startExt ? [startExt, ...preferred.filter(e => e !== startExt)] : preferred.slice();
+    const exts = startExt && startExt !== 'svg' ? [startExt, ...preferred.filter(e => e !== startExt)] : preferred.slice();
     let idx = 0;
     function tryNext(){
       if (idx >= exts.length) return;

@@ -12,8 +12,90 @@
   <link rel="preload" href="assets/site-config.json" as="fetch" crossorigin="anonymous">
   <link rel="stylesheet" href="assets/styles.css">
   <script defer src="assets/script.js"></script>
+<style>
+/* --- Floating Menu Button (FAB) --- */
+#fab-menu{
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 10000;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: #111;
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+#fab-menu:focus{ outline: none; }
+@media (hover:hover){
+  #fab-menu:hover{ transform: translateY(-1px); }
+}
+
+/* --- Overlay menu --- */
+#overlay-menu{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  display: none;
+}
+#overlay-menu.active{ display: block; }
+#overlay-menu .panel{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  width: min(84vw, 360px);
+  background: #fff;
+  box-shadow: 4px 0 24px rgba(0,0,0,.2);
+  padding: 20px 16px;
+  overflow-y: auto;
+}
+#overlay-menu .panel h3{
+  margin: 6px 0 12px 0;
+  font-size: 18px;
+}
+#overlay-menu .panel ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#overlay-menu .panel li{
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+#overlay-menu .panel a{
+  display:block;
+  padding: 12px 8px;
+  text-decoration: none;
+  color: #111;
+}
+#overlay-menu .panel a:active{ background: rgba(0,0,0,.05); }
+#overlay-menu .scrim{
+  position:absolute; inset:0; left: min(84vw, 360px); 
+}
+</style>
 </head>
 <body>
+
+<!-- Floating Menu Button -->
+<button id="fab-menu" aria-label="Open menu" title="Меню">☰</button>
+
+<!-- Overlay Menu -->
+<div id="overlay-menu" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Меню">
+    <h3>Навигация</h3>
+    <ul id="overlay-menu-list"></ul>
+  </div>
+  <div class="scrim" tabindex="-1" aria-label="Закрыть меню"></div>
+</div>
+
 <header class="header">
   <div class="brand">
     <a href="index.html"><img id="site-logo" src="assets/img/logo.svg" alt="Логотип AriPups"></a>
@@ -58,5 +140,77 @@
 <footer class="footer">
   © <span id="site-year"></span> <span id="site-name-foot">AriPups</span>. Все права защищены.
 </footer>
+<script>
+// --- Overlay Menu logic ---
+(function(){
+  try {
+    var fab = document.getElementById('fab-menu');
+    var overlay = document.getElementById('overlay-menu');
+    var list = document.getElementById('overlay-menu-list');
+    if(!fab || !overlay || !list) return;
+    function openMenu(){
+      overlay.classList.add('active');
+      overlay.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu(){
+      overlay.classList.remove('active');
+      overlay.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+    }
+    fab.addEventListener('click', openMenu);
+    overlay.querySelector('.scrim').addEventListener('click', closeMenu);
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeMenu();
+    });
+    // Gather existing nav links (<nav> or header links)
+    function collectLinks(){
+      var anchors = [];
+      var navs = Array.from(document.querySelectorAll('nav a, header a'));
+      if(navs.length){
+        anchors = navs;
+      } else {
+        anchors = Array.from(document.querySelectorAll('a[href^="#"], a[href$=".html"]'));
+      }
+      // Filter duplicates and only visible meaningful items
+      var seen = new Set();
+      var items = [];
+      anchors.forEach(function(a){
+        var href = a.getAttribute('href') || '';
+        var text = (a.textContent || '').trim();
+        if(!href || !text) return;
+        var key = text+'|'+href;
+        if(seen.has(key)) return;
+        seen.add(key);
+        // skip empty/utility links
+        if(/^\s*(#|javascript:)/i.test(href)) return;
+        items.push({text:text, href:href});
+      });
+      return items;
+    }
+    var items = collectLinks();
+    if(items.length === 0){
+      // Fallback: common sections
+      items = [
+        {text:'О нас', href:'#about'},
+        {text:'Услуги', href:'#services'},
+        {text:'Галерея', href:'#gallery'},
+        {text:'Контакты', href:'#contact'},
+        {text:'Оформить заказ', href:'#order'}
+      ];
+    }
+    items.forEach(function(it){
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = it.href;
+      a.textContent = it.text;
+      a.addEventListener('click', function(){ setTimeout(closeMenu, 0); });
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+  } catch(e){ console.warn('menu init error', e); }
+})();
+</script>
+<script src="assets/js/wheel_fix.js"></script>
 </body>
 </html>
