@@ -101,7 +101,7 @@
 <div class="brand"><a href="index.html"><img alt="Логотип AriPups" id="site-logo" src="assets/img/logo.svg"/></a><strong id="site-name">AriPups</strong>
 </div>
 <nav\1id="site-nav" class="nav"><a href="index.html">Главная</a><a href="catalog.html">Каталог</a><a href="animators.html">Аниматоры</a><a href="gallery.html">Галерея</a><a href="reviews.html">Отзывы</a><a href="about.html">О нас</a><a href="contacts.html">Контакты</a>
-<a class="btn" data-avito="1" href="https://www.avito.ru/user/d30b0d85c0c8100eb1b13d0195e35e4a/profile?src=sharing" id="nav-order-cta" rel="noopener" target="_blank">Оформить заказ</a></nav>
+<a class="btn"  href="#order"   id="nav-order-cta" rel="noopener">Оформить заказ</a></nav>
 </header><a aria-label="Позвонить" class="fab-call" href="#" id="fab-call"> <svg fill="none" stroke="currentColor" viewbox="0 0 24 24">
 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.09 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.3 1.77.57 2.61a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.47-1.14a2 2 0 0 1 2.11-.45 13.32 13.32 0 0 0 2.61.57A2 2 0 0 1 22 16.92z"></path>
 </svg> <span>Позвонить</span></a>
@@ -110,15 +110,15 @@
 <div class="grid-2">
 <div class="card">
 <h2>Связаться</h2>
-<p><strong>Телефон:</strong> <a href="#" id="cfg-phone">...</a><br/> <strong>Email:</strong> <a href="#" id="cfg-email">...</a><br/> <strong>Адрес:</strong> <span id="cfg-address">...</span>
-<br/><strong>Telegram:</strong> <a href="#" id="cfg-telegram" rel="noopener" target="_blank">@AriPups</a>
-<p><a class="btn" data-avito="1" href="https://www.avito.ru/user/d30b0d85c0c8100eb1b13d0195e35e4a/profile?src=sharing" id="cfg-avito" rel="noopener" target="_blank">Оформить заказ</a></p>
+<p><strong>Телефон:</strong> <a href="#" id="cfg-phone">...</a><br/> <strong>Email:</strong> <a href="#" id="cfg-email">...</a>
+<br/><strong>Telegram:</strong> <a href="#" id="cfg-telegram" rel="noopener">@AriPups</a>
+<p><a class="btn"  href="#order"   id="cfg-avito" rel="noopener">Оформить заказ</a></p>
 </p>
 </div>
-<form class="card" id="order-form">
-<h2>Быстрый заказ</h2>
+<form class="card"  id="order-form" action="php/order.php" method="post" novalidate>
+<h2 id="order">Оформить заказ</h2>
 <label>Формат программы<br/>
-<input name="format" placeholder="Принцесса" required="" type="text"/>
+<select name="format" required></select>
 </label>
 <br/>
 <br/>
@@ -137,6 +137,9 @@
 </label>
 <br/>
 <br/>
+<input type="hidden" name="csrf_token" value=""/>
+<div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"><label>Website<input name="website" autocomplete="off" tabindex="-1"></label></div>
+<input type="hidden" name="ts" value=""/>
 <button class="btn" type="submit">Отправить</button>
 </form>
 </div>

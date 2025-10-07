@@ -20,7 +20,7 @@
     if ($('#cfg-email')) { $('#cfg-email').textContent = cfg.email; $('#cfg-email').href = `mailto:${cfg.email}`; }
     if ($('#cfg-address')) $('#cfg-address').textContent = cfg.address;
     if ($('#cfg-telegram')) { $('#cfg-telegram').textContent = cfg.telegram?.replace('https://t.me/','@') || ''; $('#cfg-telegram').href = cfg.telegram || '#'; }
-    if ($('#cfg-avito')) { $('#cfg-avito').href = cfg.avito || '#'; }
+    if ($('#cfg-avito')) { $('#cfg-avito').href = 'contacts.html#order'; }
 
     if (cfg.meta?.description) {
       const m = $('meta[name=description]'); if (m) m.setAttribute('content', cfg.meta.description);
@@ -50,13 +50,13 @@
     const items = parseCSV(text).filter(x => String(x.active).trim() === '1');
     host.innerHTML = items.map(x => {
       const price = x.price_from ? `от ${x.price_from} ₽` : '';
-      const orderLink = (state.cfg?.avito || '#');
+      const orderLink = 'contacts.html#order';
       return `<article class="program-card card">
         <img loading="lazy" src="${x.image}" alt="${x.title} — изображение">
         <h3>${x.title}</h3>
         <p class="muted">${x.desc||''}</p>
         <div class="price">${price}</div>
-        <p><a class="btn" href="${orderLink}">Оформить заказ</a></p>
+        <p><a class="btn order-link" data-format="${x.title}" href="${orderLink}">Оформить заказ</a></p>
       </article>`;
     }).join('');
   }
@@ -67,13 +67,13 @@
     const items = parseCSV(text).filter(x => String(x.active).trim() === '1' && String(x.featured).trim() === '1');
     host.innerHTML = items.map(x => {
       const price = x.price_from ? `от ${x.price_from} ₽` : '';
-      const orderLink = (state.cfg?.avito || '#');
+      const orderLink = 'contacts.html#order';
       return `<article class="program-card card">
         <img loading="lazy" src="${x.image}" alt="${x.title} — изображение">
         <h3>${x.title}</h3>
         <p class="muted">${x.desc||''}</p>
         <div class="price">${price}</div>
-        <p><a class="btn" href="${orderLink}">Оформить заказ</a></p>
+        <p><a class="btn order-link" data-format="${x.title}" href="${orderLink}">Оформить заказ</a></p>
       </article>`;
     }).join('');
   }
@@ -126,7 +126,7 @@
       const subj = q.subject || `Заказ: ${d.get('format')||''}`;
       const price = q.price ? `\nЦена от: ${q.price}` : '';
       const body = `Имя: ${d.get('name')}\nТелефон: ${d.get('phone')}\nФормат: ${d.get('format')}${price}\nКомментарий: ${d.get('comment')||''}`;
-      window.location.href = (state.cfg?.avito || '#');
+      window.location.href = 'contacts.html#order';
     });
   }
 
@@ -218,7 +218,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   // normalize order buttons to Avito
   setTimeout(()=> {
     $$('a.btn').forEach(a=>{
-      if (/Заказать|Оформить/i.test(a.textContent)) { a.href = (state.cfg?.avito || '#'); a.setAttribute('target','_blank'); a.setAttribute('rel','noopener'); }
+      if (/Заказать|Оформить/i.test(a.textContent)) { a.href = 'contacts.html#order'; a.setAttribute('target','_blank'); a.setAttribute('rel','noopener'); }
     });
   }, 200);
 
@@ -234,7 +234,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
       a.id = 'nav-order-cta';
       a.className = 'btn';
       a.textContent = 'Оформить заказ';
-      a.href = (state.cfg?.avito || '#');
+      a.href = 'contacts.html#order';
       a.setAttribute('target','_blank');
       a.setAttribute('rel','noopener');
       nav.appendChild(a);
@@ -244,10 +244,9 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 })();
 
 
-// Utility: bind any link with data-avito="1" to cfg.avito
+// Utility: bind any link with data-avito="1" to 'contacts.html#order'
 document.addEventListener('DOMContentLoaded', ()=>{
-  $$('a[data-avito="1"]').forEach(a=>{
-    a.href = (state.cfg?.avito || '#');
+  $$('a[data-avito="1"]').forEach(a=>{ a.href = 'contacts.html#order'; a.classList.add('order-link');
     a.setAttribute('target','_blank'); a.setAttribute('rel','noopener');
   });
 });
@@ -285,9 +284,11 @@ function setImgWithFallback(img, base, order){
 document.addEventListener('DOMContentLoaded', ()=>{
   const rebinder = setInterval(()=>{
     try{
-      if (window.state && state.cfg && state.cfg.avito){
-        var url = state.cfg.avito;
+      if (window.state && state.cfg && state.'contacts.html#order'){
+        var url = state.'contacts.html#order';
         var nodes = document.querySelectorAll('a.btn, a[data-avito="1"]');
+          // force all order/заказать buttons to internal order tab
+
         nodes.forEach(a=>{
           if (a.hasAttribute('data-avito') || /Заказать|Оформить/i.test(a.textContent)){
             a.href = url;
@@ -312,4 +313,105 @@ document.addEventListener('DOMContentLoaded', ()=>{
       btn.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
   }
+})();
+
+
+// == TG ORDER INTEGRATION ==
+(function(){
+  // Delegate clicks on catalog order links to store prefill and navigate
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a.order-link');
+    if (!a) return;
+    var format = a.getAttribute('data-format') || '';
+    try { localStorage.setItem('prefill_format', format); } catch(e){}
+    // allow default navigation to contacts.html#order
+  }, {passive:true});
+
+  // Populate <select name="format"> with programs.csv and prefill
+  document.addEventListener('DOMContentLoaded', async function(){
+    var form = document.querySelector('#order-form');
+    if (!form) return;
+    var select = form.querySelector('select[name="format"]');
+    // If select is not present (older markup), try to upgrade input->select
+    if (!select){
+      var input = form.querySelector('input[name="format"]');
+      if (input){
+        // Replace input with select (basic)
+        select = document.createElement('select');
+        select.name = 'format';
+        select.required = true;
+        select.className = input.className || '';
+        input.parentNode.replaceChild(select, input);
+      }
+    }
+    // Build options from CSV
+    try {
+      var res = await fetch('assets/programs.csv'); var text = await res.text();
+      var lines = text.trim().split(/\r?\n/); lines.shift(); // header
+      var titles = [];
+      lines.forEach(function(line){
+        var cells = []; var cur = ''; var inq=false;
+        for (var i=0;i<line.length;i++){
+          var ch=line[i];
+          if(ch=='"'){ inq=!inq; continue; }
+          if(ch==',' && !inq){ cells.push(cur); cur=''; } else { cur+=ch; }
+        }
+        cells.push(cur);
+        var title = (cells[1]||'').trim();
+        var active = (cells[5]||'1').trim();
+        if (title && active==='1') titles.push(title);
+      });
+      if (select){
+        // Clear and insert placeholder
+        select.innerHTML = '<option value="" disabled selected>Выберите формат</option>' + titles.map(t=>`<option>${t}</option>`).join('') + '<option>Другое</option>';
+      }
+    } catch(e){ /* silent */ }
+
+    // Prefill from localStorage or URL (?format=... or #order:format=...)
+    var pre = '';
+    try { pre = localStorage.getItem('prefill_format') || ''; localStorage.removeItem('prefill_format'); } catch(e){}
+    if (!pre){
+      var url = new URL(location.href);
+      pre = url.searchParams.get('format') || '';
+      if (!pre && location.hash.includes('format=')){
+        pre = decodeURIComponent(location.hash.split('format=')[1]||'').replace(/[#&].*$/,'');
+      }
+    }
+    if (pre && select){
+      Array.from(select.options).forEach(o=>{ if(o.textContent.trim()===pre){ o.selected=true; } });
+    }
+
+    // Fetch CSRF token
+    var csrf = form.querySelector('input[name="csrf_token"]');
+    if (csrf){
+      try {
+        var r = await fetch('php/csrf.php', {cache:'no-store'});
+        var j = await r.json();
+        if (j && j.token) csrf.value = j.token;
+      } catch(e){ /* ignore */ }
+    }
+
+    // Init timer
+    var ts = form.querySelector('input[name="ts"]');
+    if (ts){ ts.value = String(Date.now()); }
+
+    // Intercept submit to send via fetch and show inline confirmation
+    form.addEventListener('submit', async function(ev){
+      ev.preventDefault();
+      var btn = form.querySelector('button[type="submit"]'); if (btn) btn.disabled = true;
+      var fd = new FormData(form);
+      try {
+        var resp = await fetch('php/order.php', { method:'POST', body: fd, headers: {'X-Requested-With':'fetch'} });
+        var data = await resp.json();
+        var box = document.createElement('div');
+        box.className = 'card';
+        box.style.padding='16px'; box.style.marginTop='12px';
+        box.textContent = data?.message || 'Готово';
+        form.replaceWith(box);
+      } catch(e){
+        if (btn) btn.disabled = false;
+        alert('Не удалось отправить. Попробуйте ещё раз.');
+      }
+    });
+  });
 })();
